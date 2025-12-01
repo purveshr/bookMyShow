@@ -6,12 +6,15 @@ import com.backendlld.bookmyshowjan.models.User;
 import com.backendlld.bookmyshowjan.services.PasswordResetService;
 import com.backendlld.bookmyshowjan.services.UserService;
 import com.backendlld.bookmyshowjan.utilities.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,8 +41,8 @@ public class UserController {
     }
 
     @GetMapping("greet")
-    public String greet() {
-        return "hello";
+    public String greet(Authentication authentication) {
+        return "hello " + authentication.getName();
     }
 
     @PostMapping("/signup")
@@ -97,6 +100,13 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to reset password: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, authentication);
+        return ResponseEntity.ok("Logged out successfully");
     }
 }
 
