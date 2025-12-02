@@ -2,10 +2,13 @@ package com.backendlld.bookmyshowjan.services;
 
 import com.backendlld.bookmyshowjan.models.User;
 import com.backendlld.bookmyshowjan.repos.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 
 @Service
@@ -18,14 +21,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException( " Username not found."));
+                .orElseThrow(() -> new UsernameNotFoundException(" Username not found."));
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .authorities("USER")
+                .authorities(user.getRole().name())
                 .build();
     }
-
 }

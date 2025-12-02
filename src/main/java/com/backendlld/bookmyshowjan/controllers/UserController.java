@@ -3,11 +3,14 @@ package com.backendlld.bookmyshowjan.controllers;
 import com.backendlld.bookmyshowjan.dtos.*;
 import com.backendlld.bookmyshowjan.dtos.ResponseStatus;
 import com.backendlld.bookmyshowjan.models.User;
+import com.backendlld.bookmyshowjan.models.UserRole;
+import com.backendlld.bookmyshowjan.repos.UserRepository;
 import com.backendlld.bookmyshowjan.services.PasswordResetService;
 import com.backendlld.bookmyshowjan.services.UserService;
 import com.backendlld.bookmyshowjan.utilities.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordResetService passwordResetService;
@@ -107,6 +115,27 @@ public class UserController {
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(request, response, authentication);
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PutMapping("/{userId}/role")
+    @PreAuthorize("hasRole('ADMIN')")  // Only admins can update roles
+    public ResponseEntity<?> updateUserRole(@PathVariable Long userId,
+                                            @RequestBody Map<String, String> roleRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        String roleStr = roleRequest.get("role");   // read "role" from JSON body
+        if (roleStr == null) {
+            return ResponseEntity.badRequest().body("role is required");
+        }
+        try {
+            UserRole role = UserRole.valueOf(roleStr.toUpperCase()); // e.g. "ADMIN"
+            user.setRole(role);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid role: " + roleStr);
+        }
+
+        userRepository.save(user);
+        return ResponseEntity.ok("Role updated");
     }
 }
 

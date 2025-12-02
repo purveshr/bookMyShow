@@ -1,13 +1,11 @@
-package com.backendlld.bookmyshowjan.models;
+package com.backendlld.bookmyshowjan.dtos;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-public class Movie extends BaseModel{
+public class MovieDTO {
     private String title;
     private int year;
     private String director;

@@ -1,6 +1,7 @@
 package com.backendlld.bookmyshowjan.services;
 
 import com.backendlld.bookmyshowjan.models.User;
+import com.backendlld.bookmyshowjan.models.UserRole;
 import com.backendlld.bookmyshowjan.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +39,7 @@ public class UserService {
         user.setName(username);
         user.setUsername(username);
         user.setMobileNumber(mobileNumber);
+        user.setRole(UserRole.CUSTOMER); // Default role
         return userRepository.save(user);
     }
 
