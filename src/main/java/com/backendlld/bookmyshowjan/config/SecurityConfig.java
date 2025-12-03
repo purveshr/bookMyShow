@@ -50,10 +50,13 @@ public class SecurityConfig {
                                 "/user/requestOtp",
                                 "/user/reset"
                         ).permitAll()
-                        .requestMatchers("/movie").hasAnyRole("CUSTOMER", "ADMIN", "THEATER_OWNER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/theater/**").hasRole("THEATER_OWNER")// open signup
-                        .anyRequest().authenticated()// protect others
+                        .requestMatchers("/movie")
+                            .hasAnyAuthority("CUSTOMER", "ADMIN", "THEATER_OWNER")
+                        .requestMatchers("/admin/**")
+                            .hasAuthority("ADMIN")
+                        .requestMatchers("/theater/**")
+                            .hasAuthority("THEATER_OWNER")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

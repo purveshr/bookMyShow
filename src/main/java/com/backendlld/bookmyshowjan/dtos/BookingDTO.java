@@ -6,12 +6,12 @@ import lombok.Setter;
 @Setter
 @Getter
 public class BookingDTO {
-    private Long id;
+    private String id;
     private String bookingInfo;
 
     public BookingDTO() {}
 
-    public BookingDTO(Long id, String bookingInfo) {
+    public BookingDTO(String id, String bookingInfo) {
         this.id = id;
         this.bookingInfo = bookingInfo;
     }

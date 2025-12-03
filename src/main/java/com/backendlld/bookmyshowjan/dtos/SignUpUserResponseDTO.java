@@ -8,7 +8,7 @@ import lombok.Setter;
 public class SignUpUserResponseDTO {
     private String message;
     private ResponseStatus status;
-    private int userId;
+    private String userId;
 }
 
 

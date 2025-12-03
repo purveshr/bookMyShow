@@ -16,7 +16,7 @@ public class Show extends BaseModel{
     @ManyToOne
     private Movie movie;
     @ManyToOne
-    private Theatre theatre;
+    private Theater theater;
     @ManyToOne
     private Screen screen;
     private Date date;
