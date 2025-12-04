@@ -6,6 +6,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Show extends BaseModel{
     private Date date;
     @OneToMany
     private List<ShowSeat> seats;
-    @OneToMany
+    @OneToMany(mappedBy = "show", orphanRemoval = true)
     private List<ShowSeatType> showSeatTypes;
+    private LocalTime showTime;
 }

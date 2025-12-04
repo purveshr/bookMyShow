@@ -1,4 +1,4 @@
-package com.backendlld.bookmyshowjan.controllers;
+package com.backendlld.bookmyshowjan.controllers.admin;
 
 import com.backendlld.bookmyshowjan.dtos.MovieRequestDTO;
 import com.backendlld.bookmyshowjan.dtos.MovieResponseDTO;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
-public class AdminMovieController {
+@RequestMapping("/admin/movie")
+public class AdminMovieController { //
 
     public AdminMovieController(MovieService movieService) {   // inject service
         this.movieService = movieService;
@@ -24,8 +24,8 @@ public class AdminMovieController {
 
     private final MovieService movieService;
     // Admin only
-    @PostMapping("/addMovie")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/add") // admin/movie.add
+    @PreAuthorize("hasRole('ADMIN')") // /admin/movie/addMovie
     public ResponseEntity<?> createMovie(@RequestBody MovieRequestDTO request) {
         try {
             MovieResponseDTO response = movieService.createMovie(request);

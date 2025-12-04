@@ -1,11 +1,10 @@
 package com.backendlld.bookmyshowjan.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,15 +12,21 @@ import java.util.List;
 @Entity
 public class Screen extends BaseModel{
     private String name;
+
+    // JPA relation
     @ManyToOne
-    private Theater theatre;
-    @OneToMany
-    private List<Seat> seats;
+    @JoinColumn(name = "theater_id")   // FK column
+    private Theater theater;
+
+    // Snapshot fields – use different physical column names
+    @Column(name = "theater_id_snapshot")
+    private String theaterId;          // copy of theater.getId()
+
+    @Column(name = "theater_name_snapshot")
+    private String theaterName;
+
+    @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
+
+    public void setSeats(List<Seat> seats) { this.seats = seats; }
 }
-
-
-// Booking Ticket : Completed by you
-
-// Sign Up User
-// Email , password
-// create the user

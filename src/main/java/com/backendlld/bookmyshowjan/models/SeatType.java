@@ -9,4 +9,5 @@ import lombok.Setter;
 @Entity
 public class SeatType extends BaseModel{
     private String name;
+    private Double price;
 }
