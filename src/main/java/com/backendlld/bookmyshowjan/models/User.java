@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @Entity(name = "users")
 public class User extends BaseModel {
-    private int userId;
     private String name;
     private String username;
     private String email;

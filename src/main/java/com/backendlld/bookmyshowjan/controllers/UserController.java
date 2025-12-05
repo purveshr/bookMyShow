@@ -6,6 +6,7 @@ import com.backendlld.bookmyshowjan.models.User;
 import com.backendlld.bookmyshowjan.models.UserRole;
 import com.backendlld.bookmyshowjan.repos.UserRepository;
 import com.backendlld.bookmyshowjan.services.PasswordResetService;
+import com.backendlld.bookmyshowjan.services.ShowSeatLayoutService;
 import com.backendlld.bookmyshowjan.services.UserService;
 import com.backendlld.bookmyshowjan.utilities.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,22 +32,23 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
-
-    @Autowired
+    private final ShowSeatLayoutService showSeatLayoutService;
     private UserRepository userRepository;
-
-    @Autowired
     private PasswordResetService passwordResetService;
 
     @Autowired
     public UserController(UserService userService,
                           PasswordEncoder passwordEncoder,
                           JwtUtil jwtUtil,
-                          AuthenticationManager authenticationManager) {
+                          AuthenticationManager authenticationManager,
+                          ShowSeatLayoutService showSeatLayoutService,
+                          UserRepository userRepository,
+                          PasswordResetService passwordResetService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.showSeatLayoutService = showSeatLayoutService;
     }
 
     @GetMapping("greet")
@@ -119,7 +122,7 @@ public class UserController {
 
     @PutMapping("/{userId}/role")
     @PreAuthorize("hasRole('ADMIN')")  // Only admins can update roles
-    public ResponseEntity<?> updateUserRole(@PathVariable Long userId,
+    public ResponseEntity<?> updateUserRole(@PathVariable String userId,
                                             @RequestBody Map<String, String> roleRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -136,6 +139,11 @@ public class UserController {
 
         userRepository.save(user);
         return ResponseEntity.ok("Role updated");
+    }
+
+    @GetMapping("/{showId}/seats")
+    public ResponseEntity<List<ShowSeatResponseDTO>> getShowSeats(@PathVariable String showId) {
+        return ResponseEntity.ok(showSeatLayoutService.getSeatsForShow(showId));
     }
 }
 

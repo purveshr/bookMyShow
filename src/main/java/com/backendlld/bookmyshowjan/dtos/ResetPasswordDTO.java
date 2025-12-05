@@ -9,4 +9,6 @@ public class ResetPasswordDTO {
     private String email;
     private String otp;
     private String newPassword;
+
+
 }

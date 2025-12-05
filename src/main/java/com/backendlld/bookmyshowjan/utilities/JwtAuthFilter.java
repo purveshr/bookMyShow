@@ -26,6 +26,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        String method = request.getMethod();
+
+        // For debugging
+//        System.out.println("JwtAuthFilter shouldNotFilter path = " + path + ", method = " + method);
+
+        // Skip filter for:
+        // 1. Swagger/OpenAPI documentation
+        // 2. Authentication endpoints
+        // 3. Error pages
+        return path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/api-docs") ||
+                path.startsWith("/swagger-resources") ||
+                path.startsWith("/webjars") ||
+                path.startsWith("/user/login") ||
+                path.startsWith("/user/signup") ||
+                path.startsWith("/user/requestOtp") ||
+                path.startsWith("/user/reset") ||
+                path.equals("/swagger-ui.html") ||
+                path.equals("/error") ||
+                path.equals("/favicon.ico");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)

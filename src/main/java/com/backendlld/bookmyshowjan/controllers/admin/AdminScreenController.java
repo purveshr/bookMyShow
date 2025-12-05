@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/screens")
+@RequestMapping("/admin/screen")
 @PreAuthorize("hasRole('ADMIN') or hasRole('THEATER_OWNER')")
 public class AdminScreenController {
 
