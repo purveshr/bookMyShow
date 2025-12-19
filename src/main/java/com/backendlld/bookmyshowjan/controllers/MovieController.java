@@ -1,6 +1,7 @@
 package com.backendlld.bookmyshowjan.controllers;
 
 
+import com.backendlld.bookmyshowjan.dtos.MovieResponseDTO;
 import com.backendlld.bookmyshowjan.dtos.MovieTitleDirectorDTO;
 import com.backendlld.bookmyshowjan.models.Movie;
 import com.backendlld.bookmyshowjan.repos.MovieRepository;
@@ -41,12 +42,9 @@ public class MovieController {
     // GET movie by ID
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Movie> getMovieById(@PathVariable String id) {
-        Movie movie = movieRepository.findByMovieId(id);
-        if (movie != null) {
-            return ResponseEntity.ok(movie);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<MovieResponseDTO> getMovieById(@PathVariable Integer id) {
+        MovieResponseDTO response = movieService.findMovieById(id);
+        return response != null ? ResponseEntity.ok(response) : ResponseEntity.notFound().build();
     }
 
     // GET movies by genre

@@ -29,13 +29,7 @@ public class AdminScreenController {
     public ResponseEntity<ScreenResponseDTO> createScreen(
             @RequestBody ScreenRequestDTO request) {
 
-        System.out.println("theaterId = " + request.getTheaterId());
-        System.out.println("screenName = " + request.getScreenName());
-
         Screen screen = screenService.createScreen(request.getTheaterId(), request.getScreenName());
-
-
-
         ScreenResponseDTO response = new ScreenResponseDTO();
         response.setScreenId(screen.getId());
         response.setScreenName(screen.getName());
@@ -45,7 +39,7 @@ public class AdminScreenController {
 
     @PostMapping("/{screenId}/layout")
     public ResponseEntity<Void> createLayout(
-            @PathVariable String screenId,
+            @PathVariable Integer screenId,
             @RequestBody List<SeatBlockConfig> blocks) {
 
         screenLayoutService.generateLayout(screenId, blocks);

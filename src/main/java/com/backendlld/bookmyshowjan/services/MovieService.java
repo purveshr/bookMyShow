@@ -6,6 +6,7 @@ import com.backendlld.bookmyshowjan.dtos.MovieTitleDirectorDTO;
 import com.backendlld.bookmyshowjan.exception.DuplicateMovieException;
 import com.backendlld.bookmyshowjan.models.Movie;
 import com.backendlld.bookmyshowjan.repos.MovieRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +59,19 @@ public class MovieService {
         return movies.stream()
                 .map(movie -> new MovieTitleDirectorDTO(movie.getTitle(), movie.getDirector()))
                 .toList();
+    }
+
+    public MovieResponseDTO findMovieById(Integer id) {
+        Movie movie = movieRepository.findByMovieId(id);
+        if (movie == null) {
+            return null;  // Controller handles 404
+        }
+        MovieResponseDTO response = new MovieResponseDTO();
+        response.setId(movie.getId());      // Fixed: getId() not getMovieId()
+        response.setTitle(movie.getTitle());
+        response.setDirector(movie.getDirector());
+        response.setGenre(movie.getGenre());
+        response.setDescription(movie.getDescription());
+        return response;
     }
 }

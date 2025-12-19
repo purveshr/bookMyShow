@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TheaterRepository extends JpaRepository<Theater, String> {
+public interface TheaterRepository extends JpaRepository<Theater, Integer> {
     @Override
-    Optional<Theater> findById(String id);
+    Optional<Theater> findById(Integer id);
 
 }

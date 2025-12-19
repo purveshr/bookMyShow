@@ -13,6 +13,7 @@ public class Theater extends BaseModel {
     private String name;
     private String address;
     private String city;
+    private Integer ownerId;
     @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Screen> screens;
     // Constructors, getters, setters

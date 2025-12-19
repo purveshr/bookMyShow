@@ -23,7 +23,7 @@ public class ShowSeatLayoutService {
     }
 
     @Transactional
-    public List<ShowSeatResponseDTO> getSeatsForShow(String showId) {
+    public List<ShowSeatResponseDTO> getSeatsForShow(Integer showId) {
         Show show = showRepository.findById(showId)
                 .orElseThrow(() -> new IllegalArgumentException("Show not found: " + showId));
 

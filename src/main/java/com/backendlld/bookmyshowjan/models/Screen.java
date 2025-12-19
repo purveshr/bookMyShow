@@ -20,7 +20,7 @@ public class Screen extends BaseModel{
 
     // Snapshot fields – use different physical column names
     @Column(name = "theater_id_snapshot")
-    private String theaterId;          // copy of theater.getId()
+    private Integer theaterId;          // copy of theater.getId()
 
     @Column(name = "theater_name_snapshot")
     private String theaterName;

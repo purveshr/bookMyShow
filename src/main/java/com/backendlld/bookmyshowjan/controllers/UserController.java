@@ -142,7 +142,7 @@ public class UserController {
     }
 
     @GetMapping("/{showId}/seats")
-    public ResponseEntity<List<ShowSeatResponseDTO>> getShowSeats(@PathVariable String showId) {
+    public ResponseEntity<List<ShowSeatResponseDTO>> getShowSeats(@PathVariable Integer showId) {
         return ResponseEntity.ok(showSeatLayoutService.getSeatsForShow(showId));
     }
 }

@@ -27,4 +27,3 @@ public class User extends BaseModel {
     @OneToMany
     private List<Booking> bookings;
 }
-// User  1  :  M   Bookings

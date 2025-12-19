@@ -6,14 +6,15 @@ import com.backendlld.bookmyshowjan.models.Theater;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Time;
 import java.util.Date;
 
 
-@Getter
-@Setter
-public class CreateShowDTO {
-    private Movie movie;
-    private Theater theater;
-    private Screen screen;
+@Getter @Setter
+public class CreateShowRequestDTO {
+    private Integer movieId;
+    private Integer theaterId;
+    private Integer screenId;
     private Date date;
+    private Time time;
 }

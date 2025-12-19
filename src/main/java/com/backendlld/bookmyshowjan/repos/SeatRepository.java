@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 @Repository
-public interface SeatRepository extends JpaRepository<Seat, String> {
+public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
     @Modifying
     @Transactional
     @Query("DELETE FROM Seat s WHERE s.screen.id = :screenId")
-    void deleteByScreenId(@Param("screenId") String screenId);
+    void deleteByScreenId(@Param("screenId") Integer screenId);
 }

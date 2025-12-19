@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SeatTypeRepository extends JpaRepository<SeatType, String> {
+public interface SeatTypeRepository extends JpaRepository<SeatType, Integer> {
     Optional<SeatType> findByNameIgnoreCase(String name);
-
-
 }

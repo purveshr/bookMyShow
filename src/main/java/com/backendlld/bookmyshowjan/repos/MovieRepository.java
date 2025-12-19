@@ -1,5 +1,6 @@
 package com.backendlld.bookmyshowjan.repos;
 
+import com.backendlld.bookmyshowjan.dtos.MovieResponseDTO;
 import com.backendlld.bookmyshowjan.models.Movie;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,18 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, String> {
+public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     List<Movie> findAll();
     Boolean existsByTitleAndDirector(String title, String director);
     List<Movie> findByGenreContainingIgnoreCase(String genre);
 
     @Query("SELECT m FROM Movie m WHERE m.id = :keyword")
-    Movie findByMovieId(@Param("keyword") String id);
-
-//    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER('%', :keyword, '%')")
-//    List<Movie> findByTitleContainingIgnoreCase(@Param("keyword") String keyword);
-
+    Movie findByMovieId(@Param("keyword") Integer id);
     List<Movie> findByTitleContainingIgnoreCase(String title);
 
 }

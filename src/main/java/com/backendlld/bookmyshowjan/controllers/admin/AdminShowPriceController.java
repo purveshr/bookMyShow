@@ -29,7 +29,7 @@ public class AdminShowPriceController {
 
     @PostMapping("/{showId}/seat-type-prices")
     public ResponseEntity<Void> setSeatTypePrices(
-            @PathVariable String showId,
+            @PathVariable Integer showId,
             @RequestBody List<ShowSeatTypePriceRequestDTO> body) {
 
         Show show = showRepository.findById(showId)

@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScreenResponseDTO {
-    private String screenId;
+    private Integer screenId;
     private String screenName;
 }

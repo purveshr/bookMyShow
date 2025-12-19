@@ -21,9 +21,14 @@ public class ScreenService {
     }
 
     @Transactional
-    public Screen createScreen(String theaterId, String name) {
+    public Screen createScreen(Integer theaterId, String name) {
         Theater theater = theaterRepository.findById(theaterId)
                 .orElseThrow(() -> new IllegalArgumentException("Theater not found: " + theaterId));
+
+        screenRepository.findByNameAndTheaterId(name, theaterId)
+                .ifPresent(existing -> {
+                    throw new RuntimeException("Screen with requested name is already present.");
+                });
 
         Screen screen = new Screen();
         screen.setName(name);

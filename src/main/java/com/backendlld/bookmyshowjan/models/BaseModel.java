@@ -15,8 +15,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @CreatedDate
     private Date createdAt;
     @LastModifiedDate

@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScreenRequestDTO {
-    private String theaterId;
+    private Integer theaterId;
     private String screenName;
 }

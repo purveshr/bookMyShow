@@ -28,7 +28,7 @@ public class ScreenLayoutService {
     }
 
     @Transactional
-    public Screen generateLayout(String screenId, List<SeatBlockConfig> blocks) {
+    public Screen generateLayout(Integer screenId, List<SeatBlockConfig> blocks) {
         Screen screen = screenRepository.findById(screenId)
                 .orElseThrow(() -> new IllegalArgumentException("Screen not found: " + screenId));
 
