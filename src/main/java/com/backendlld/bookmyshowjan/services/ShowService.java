@@ -2,6 +2,7 @@ package com.backendlld.bookmyshowjan.services;
 
 import com.backendlld.bookmyshowjan.dtos.CreateShowRequestDTO;
 import com.backendlld.bookmyshowjan.dtos.CreateShowResponseDTO;
+import com.backendlld.bookmyshowjan.exception.ShowConflictException;
 import com.backendlld.bookmyshowjan.models.Movie;
 import com.backendlld.bookmyshowjan.models.Screen;
 import com.backendlld.bookmyshowjan.models.Show;
@@ -11,59 +12,107 @@ import com.backendlld.bookmyshowjan.repos.ScreenRepository;
 import com.backendlld.bookmyshowjan.repos.ShowRepository;
 import com.backendlld.bookmyshowjan.repos.TheaterRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShowService {
 
-    private final ShowRepository showRepository;
-    private final TheaterRepository theaterRepository;
-    private final MovieRepository movieRepository;
-    private final ScreenRepository screenRepository;
+    @Autowired
+    private ShowRepository showRepository;
 
-    public ShowService(ShowRepository showRepository,
-                       TheaterRepository theaterRepository,
-                       MovieRepository movieRepository,
-                       ScreenRepository screenRepository) {
-        this.showRepository = showRepository;
-        this.theaterRepository = theaterRepository;
-        this.movieRepository = movieRepository;
-        this.screenRepository = screenRepository;
-    }
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private ScreenRepository screenRepository;
 
     public CreateShowResponseDTO createShow(CreateShowRequestDTO request, Integer ownerId) {
-        // Validate theater ownership
-        Theater theater = theaterRepository.findById(request.getTheaterId())
-                .orElseThrow(() -> new EntityNotFoundException("Theater not found"));
-        if (!theater.getOwnerId().equals(ownerId)) {
-            throw new AccessDeniedException("Not authorized for this theater");
-        }
 
-        // Fetch entities by ID
+        // 1. Fetch movie to get duration
         Movie movie = movieRepository.findById(request.getMovieId())
-                .orElseThrow(() -> new EntityNotFoundException("Movie not found"));
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+
+        // 2. Fetch screen
         Screen screen = screenRepository.findById(request.getScreenId())
-                .orElseThrow(() -> new EntityNotFoundException("Screen not found"));
+                .orElseThrow(() -> new RuntimeException("Screen not found"));
 
-        // Check show conflict
-        if (showRepository.existsByScreenIdAndDateAndTime(
-                screen.getId(), request.getDate(), request.getTime())) {
-            throw new ConflictException("Show already exists at this time");
-        }
+        // 3. Check for overlapping shows
+        checkForOverlap(request.getScreenId(), request.getDate(),
+                request.getTime(), movie.getDurationMins());
 
+        // 4. Create and save show
         Show show = new Show();
         show.setMovie(movie);
-        show.setTheater(theater);
         show.setScreen(screen);
         show.setDate(request.getDate());
         show.setTime(request.getTime());
 
         Show savedShow = showRepository.save(show);
 
+        // 5. Build response
+        CreateShowResponseDTO response = new CreateShowResponseDTO();
+        response.setShowId(savedShow.getId());
+        response.setMovieId(movie.getId());
+        response.setScreenId(screen.getId());
+        response.setDate(savedShow.getDate());
+        response.setTime(savedShow.getTime());
+
+        return response;
+    }
+
+    private void checkForOverlap(Integer screenId, Date date, Time startTime,
+                                 Integer movieDuration) {
+
+        List<Show> existingShows = showRepository.findByScreenAndDate(screenId, date);
+
+        LocalTime newShowStart = startTime.toLocalTime();
+        LocalTime newShowEnd = newShowStart.plusMinutes(movieDuration);
+
+        for (Show existingShow : existingShows) {
+            LocalTime existingStart = existingShow.getTime().toLocalTime();
+            LocalTime existingEnd = existingStart.plusMinutes(
+                    existingShow.getMovie().getDurationMins()
+            );
+
+            if (isOverlapping(newShowStart, newShowEnd, existingStart, existingEnd)) {
+                throw new ShowConflictException(
+                        String.format("Show timing conflict! Another show runs from %s to %s",
+                                existingStart, existingEnd)
+                );
+            }
+        }
+    }
+
+    // Two time ranges overlap if: start1 < end2 AND start2 < end1
+    private boolean isOverlapping(LocalTime start1, LocalTime end1,
+                                  LocalTime start2, LocalTime end2) {
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
+
+    public List<CreateShowResponseDTO> getShowsByTheaterAndDate(Integer theaterId, Date date) {
+        List<Show> shows = showRepository.findByTheater_IdAndDate(theaterId, date);
+
+        return shows.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private CreateShowResponseDTO convertToDTO(Show show) {
         return new CreateShowResponseDTO(
-                movie.getId(), theater.getId(), screen.getId(),
-                request.getDate(), request.getTime(), savedShow.getId()
+                show.getMovie().getId(),
+                show.getTheater().getId(),
+                show.getScreen().getId(),
+                show.getDate(),
+                show.getTime(),
+                show.getId()
         );
     }
 }

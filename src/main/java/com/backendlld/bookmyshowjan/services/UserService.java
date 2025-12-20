@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -55,5 +56,31 @@ public class UserService {
 
         // send OTP email
         emailService.sendOtpEmail(user.getEmail(), otp);
+    }
+
+    public String updateUserRole(Integer userId, String roleStr) {
+        // 1. Validate input
+        if (roleStr == null || roleStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("Role is required");
+        }
+
+        // 2. Validate and convert role string to enum
+        UserRole role;
+        try {
+            role = UserRole.valueOf(roleStr.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role: " + roleStr +
+                    ". Valid roles: " + Arrays.toString(UserRole.values()));
+        }
+
+        // 3. Find and update user
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        user.setRole(role);  // Set as enum, not string
+        userRepository.save(user);
+
+        // 4. Return success message
+        return "Role updated successfully to: " + role;
     }
 }

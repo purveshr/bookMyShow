@@ -11,6 +11,7 @@ import com.backendlld.bookmyshowjan.services.UserService;
 import com.backendlld.bookmyshowjan.utilities.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -120,25 +121,11 @@ public class UserController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
-    @PutMapping("/{userId}/role")
     @PreAuthorize("hasRole('ADMIN')")  // Only admins can update roles
-    public ResponseEntity<?> updateUserRole(@PathVariable String userId,
-                                            @RequestBody Map<String, String> roleRequest) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        String roleStr = roleRequest.get("role");   // read "role" from JSON body
-        if (roleStr == null) {
-            return ResponseEntity.badRequest().body("role is required");
-        }
-        try {
-            UserRole role = UserRole.valueOf(roleStr.toUpperCase()); // e.g. "ADMIN"
-            user.setRole(role);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid role: " + roleStr);
-        }
-
-        userRepository.save(user);
-        return ResponseEntity.ok("Role updated");
+    @PostMapping("/update-role")
+    public ResponseEntity<String> updateRole(@RequestBody UpdateRoleRequestDTO request) {
+        String result = userService.updateUserRole(request.getUserId(), request.getRoleRequest());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{showId}/seats")
