@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/screen")
-//@PreAuthorize("hasRole('ADMIN') or hasRole('THEATER_OWNER')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('THEATER_OWNER')")
 public class AdminScreenController {
 
     private final ScreenLayoutService screenLayoutService;

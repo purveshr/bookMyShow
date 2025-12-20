@@ -61,12 +61,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/v3/api-docs",
                                 "/api-docs/swagger-config",
-                                "/swagger-ui/index.html",
-                                "/swagger-ui/swagger-ui.css",
-                                "/swagger-ui/swagger-ui-bundle.js",
-                                "/swagger-ui/swagger-ui-standalone-preset.js",
-                                "/swagger-ui/swagger-initializer.js",
-                                "/swagger-ui/index.css",
                                 "/favicon.ico",
                                 "/error",
                                 "/user/signup",
@@ -75,6 +69,7 @@ public class SecurityConfig {
                                 "/user/reset"
                         ).permitAll()
                         .requestMatchers("/movie/**").hasAnyAuthority("CUSTOMER", "ADMIN", "THEATER_OWNER")
+                        .requestMatchers("/admin/screen/**").hasAnyAuthority("ADMIN", "THEATER_OWNER")
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/theater/**").hasAuthority("THEATER_OWNER")
                         .anyRequest().authenticated()
