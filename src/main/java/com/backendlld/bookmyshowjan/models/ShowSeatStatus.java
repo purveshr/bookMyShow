@@ -2,7 +2,7 @@ package com.backendlld.bookmyshowjan.models;
 
 public enum ShowSeatStatus {
     AVAILABLE,
-    BOOKED,
     BLOCKED,
+    BOOKED,
     OUT_OF_SERVICE
 }

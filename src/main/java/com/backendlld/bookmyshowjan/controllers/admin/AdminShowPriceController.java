@@ -38,7 +38,8 @@ public class AdminShowPriceController {
         for (ShowSeatTypePriceRequestDTO dto : body) {
             SeatType seatType = seatTypeRepository
                     .findByNameIgnoreCase(dto.getSeatTypeName())
-                    .orElseThrow(() -> new IllegalArgumentException("SeatType not found: " + dto.getSeatTypeName()));
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "SeatType not found: " + dto.getSeatTypeName()));
 
             ShowSeatType mapping = showSeatTypeRepository
                     .findByShowIdAndSeatTypeNameIgnoreCase(showId, dto.getSeatTypeName())
@@ -49,7 +50,7 @@ public class AdminShowPriceController {
                         return sst;
                     });
 
-            mapping.setPrice(dto.getPriceInCents());
+            mapping.setPriceInRupees(dto.getPriceInRupees());
             showSeatTypeRepository.save(mapping);
         }
 

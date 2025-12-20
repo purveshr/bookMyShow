@@ -15,6 +15,17 @@ public class TheaterService {
     }
 
     public TheaterResponseDTO createTheater(TheaterRequestDTO request) {
+
+        if(theaterRepository.existsByNameAndAddressAndCity(request.getName(), request.getAddress(), request.getCity())){
+            TheaterResponseDTO resp = new TheaterResponseDTO();
+            resp.setTheaterId(null);
+            resp.setName(request.getName());
+            // optionally throw or set a flag/message elsewhere
+            throw new IllegalArgumentException("Theater already exists at this address");
+        }
+
+
+
         Theater theater = new Theater();
         theater.setName(request.getName());
         theater.setAddress(request.getAddress());
@@ -28,4 +39,11 @@ public class TheaterService {
         return response;
     }
 
+    public void updateTheaterOwner(Integer theaterId, Integer ownerId) {
+        Theater theater = theaterRepository.findById(theaterId)
+                .orElseThrow(() -> new IllegalArgumentException("Theater not found: " + theaterId));
+
+        theater.setOwnerId(ownerId);   // make sure Theater has this field + setter
+        theaterRepository.save(theater);
+    }
 }

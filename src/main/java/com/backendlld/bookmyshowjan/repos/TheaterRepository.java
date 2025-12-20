@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface TheaterRepository extends JpaRepository<Theater, Integer> {
     @Override
     Optional<Theater> findById(Integer id);
+    Boolean existsByNameAndAddressAndCity(String name, String address, String city);
 
 }

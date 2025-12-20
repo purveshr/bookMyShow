@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ShowSeatTypePriceRequestDTO {
-    private String seatTypeName;  // "GOLD"
-    private int priceInCents;
+    private String seatTypeName;   // "RECLINER", "PLATINUM", "GOLD"
+    private Integer priceInRupees; // e.g. 600, 400, 250
 }

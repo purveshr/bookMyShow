@@ -1,8 +1,7 @@
-package com.backendlld.bookmyshowjan.controllers.admin;
+package com.backendlld.bookmyshowjan.controllers;
 
 import com.backendlld.bookmyshowjan.dtos.CreateShowRequestDTO;
 import com.backendlld.bookmyshowjan.dtos.CreateShowResponseDTO;
-import com.backendlld.bookmyshowjan.models.Show;
 import com.backendlld.bookmyshowjan.security.CustomUserDetails;
 import com.backendlld.bookmyshowjan.services.ShowService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/shows")
+@RequestMapping("/shows")
 public class ShowController {
 
     private final ShowService showService;
