@@ -50,6 +50,8 @@ public class UserController {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.showSeatLayoutService = showSeatLayoutService;
+        this.userRepository = userRepository;              // add
+        this.passwordResetService = passwordResetService;  // add
     }
 
     @GetMapping("greet")

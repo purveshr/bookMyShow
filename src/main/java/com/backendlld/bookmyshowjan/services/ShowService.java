@@ -62,6 +62,8 @@ public class ShowService {
         response.setShowId(savedShow.getId());
         response.setMovieId(movie.getId());
         response.setScreenId(screen.getId());
+        response.setTheaterId(screen.getTheater().getId());
+        show.setTheater(screen.getTheater());
         response.setDate(savedShow.getDate());
         response.setTime(savedShow.getTime());
 

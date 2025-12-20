@@ -29,5 +29,4 @@ public class Show extends BaseModel{
     private List<ShowSeat> seats;
     @OneToMany(mappedBy = "show", orphanRemoval = true)
     private List<ShowSeatType> showSeatTypes;
-    private LocalTime showTime;
 }

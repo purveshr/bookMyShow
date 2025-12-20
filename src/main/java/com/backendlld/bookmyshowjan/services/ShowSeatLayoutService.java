@@ -46,7 +46,7 @@ public class ShowSeatLayoutService {
                     dto.setRow(seat.getRowVal());
                     dto.setCol(seat.getColumnVal());
                     dto.setSeatType(seatTypeName);
-                    dto.setPriceInCents(mapping.getPriceInRupees());
+                    dto.setPriceInRupees(mapping.getPriceInRupees());
                     return dto;
                 })
                 .toList();

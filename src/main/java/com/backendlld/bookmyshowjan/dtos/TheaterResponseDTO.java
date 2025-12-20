@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class TheaterResponseDTO {
     private String name;
-    private Integer TheaterId;
+    private Integer theaterId;
 }

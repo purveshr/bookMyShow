@@ -33,37 +33,38 @@ public class BookingService {
                 .orElseThrow(() -> new IllegalArgumentException("Show not found: " + request.getShowId()));
 
         List<ShowSeat> seats = showSeatRepository.findAllById(request.getShowSeatIds());
-
         if (seats.size() != request.getShowSeatIds().size()) {
             throw new IllegalArgumentException("Some seats not found");
         }
 
-        // Ensure all belong to same show
         boolean wrongShow = seats.stream()
-                .anyMatch(s -> s.getShow().getId() != show.getId());
-
+                .anyMatch(s -> !s.getShow().getId().equals(show.getId()));
         if (wrongShow) {
             throw new IllegalArgumentException("Seats do not belong to the given show");
         }
 
-        // Check availability
         boolean anyNotAvailable = seats.stream()
                 .anyMatch(s -> s.getStatus() != ShowSeatStatus.AVAILABLE);
         if (anyNotAvailable) {
             throw new IllegalArgumentException("One or more seats are not available");
         }
 
-        // Block seats
         Date now = new Date();
         seats.forEach(s -> {
             s.setStatus(ShowSeatStatus.BLOCKED);
             s.setBlockedAt(now);
         });
+        showSeatRepository.saveAll(seats);   // ensure status is persisted
 
         Booking booking = new Booking();
         booking.setShow(show);
         booking.setShowSeats(seats);
         booking.setBookingStatus(BookingStatus.PENDING);
+        booking.setBookingDate(now);         // set booking time
+
+        // optional: set user if you load it from repository
+        // User user = userRepository.findById(userId).orElseThrow(...);
+        // booking.setUser(user);
 
         Booking saved = bookingRepository.save(booking);
 
@@ -71,10 +72,7 @@ public class BookingService {
         resp.setBookingId(saved.getId());
         resp.setStatus(saved.getBookingStatus());
         resp.setShowId(show.getId());
-        resp.setShowSeatIds(
-                seats.stream().map(ShowSeat::getId).toList()
-        );
-
+        resp.setShowSeatIds(seats.stream().map(ShowSeat::getId).toList());
         return resp;
     }
 }

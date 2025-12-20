@@ -11,5 +11,5 @@ public class ShowSeatResponseDTO {
     private int row;
     private int col;
     private String seatType;
-    private int priceInCents;
+    private int priceInRupees;
 }

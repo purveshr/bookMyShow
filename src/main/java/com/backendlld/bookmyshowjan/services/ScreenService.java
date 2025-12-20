@@ -34,6 +34,8 @@ public class ScreenService {
         screen.setName(name);
         screen.setTheaterName(theater.getName());
         screen.setTheaterId(theater.getId());
+        screen.setTheater(theater);
+        theater.getScreens().add(screen);
 
         return screenRepository.save(screen);
     }

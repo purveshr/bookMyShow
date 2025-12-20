@@ -6,8 +6,8 @@ import com.backendlld.bookmyshowjan.models.Theater;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.sql.Time;
-import java.sql.Date;
 
 
 @Getter @Setter
